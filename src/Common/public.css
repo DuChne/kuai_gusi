@@ -1,0 +1,37 @@
+.flex{
+    display: flex;
+}
+.flex_wrap{
+    flex-wrap: wrap;
+}
+.flex_alignc{
+    align-content: center;
+}
+.flex_justifyc{
+    justify-content: center;
+}
+.flex_justifysb{
+    justify-content: space-between;
+}
+.flex_justifyst{
+    justify-content: flex-start
+}
+.flex_justifyse{
+    justify-content: flex-end
+}
+.positionR{
+    position: relative
+}
+.positionA{
+position: absolute
+}
+.positionF{
+position: fixed
+}
+
+.pwidth{
+    width: 750px;
+}
+.load-more {
+    justify-content: center;
+  }

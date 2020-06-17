@@ -1,0 +1,1193 @@
+<import name="gsList" src="../module/gsList/index.ux"></import>
+<import name="ztList" src="../module/ztList/index.ux"></import>
+<template>
+    <!-- template里只能有一个根节点 -->
+    <div class="demo-page" style="padding-bottom:{{b_boxAd.h && diBool ?b_boxAd.h:''}};">
+
+        <div if="{{loging}}" class="demo-page">
+            <div class="topImg" if="{{!isWeb}}">
+                <div style="width:750px;">
+                    <!-- 列表 -->
+                    <list class="tabsa " onscrollbottom="chuwallFun" style="padding-top:30px;">
+                        <list-item class="gong_div flex flex_wrap flex_justifyc">
+                            <div style="width: 690px;" class="flex flex_justifysb .flex_alignc">
+                                <div style="width:120px;" class="flex flex_wrap flex_justifyc" @click="tiaoCardDemo(28)">
+                                    <image src="../Common/cat1.png" style="width:80px;"></image>
+                                    <div class="flex .flex_alignc flex_justifyc" style="width:120px;margin-top:20px;"><text style="font-size:26px;">睡前故事</text></div>
+                                </div>
+                                <div style="width:120px;" class="flex flex_wrap flex_justifyc" @click="tiaoCardDemo(73)">
+                                    <image src="../Common/cat6.png" style="width:80px;"></image>
+                                    <div class="flex .flex_alignc flex_justifyc" style="width:120px;margin-top:20px;"><text style="font-size:26px;">童话故事</text></div>
+                                </div>
+                                <div style="width:120px;" class="flex flex_wrap flex_justifyc" @click="tiaoCardDemo(9)">
+                                    <image src="../Common/cat5.png" style="width:80px;"></image>
+                                    <div class="flex .flex_alignc flex_justifyc" style="width:120px;margin-top:20px;"><text style="font-size:26px;">成语故事</text></div>
+                                </div>
+                                <div style="width:120px;" class="flex flex_wrap flex_justifyc" @click="tiaoDstory">
+                                    <image src="../Common/cat4.png" style="width:80px;"></image>
+                                    <div class="flex .flex_alignc flex_justifyc" style="width:120px;margin-top:20px;"><text style="font-size:26px;">故事大全</text></div>
+                                </div>
+                            </div>
+
+                            <div style="width:750px;height:20px;background-color:#F4F4F4;margin-top:20px"></div>
+                            <div style="width:750px;padding-left:30px;padding-top:30px;"><text style="font-size:50px;font-weight: bold">今日推荐</text></div>
+                            <ztList list="{{ctArr}}"></ztList>
+
+                            <div style="width:750px;height:20px;background-color:#F4F4F4;margin-top:20px"></div>
+                            <gsList list="{{tjArr1}}"></gsList>
+                            <gsList list="{{xlArr}}"></gsList>
+                            <div style="padding:20px;" if="{{stat >= story.total_pages}}"><text style="font-size:24px;color:#999999">我是有底线的~</text></div>
+
+                        </list-item>
+                        <list-item type="loadMore" class="load-more" if="{{jzBool}}">
+                            <progress type="circular"></progress>
+                            <text>加载更多</text>
+                        </list-item>
+                    </list>
+
+                </div>
+
+            </div>
+
+            <!-- 浮标 -->
+            <!-- if="{{c_box}}" -->
+            <div class="imgFixa" ontouchstart="menuTouchStart1($idx)" ontouchmove="menuTouchMove1($idx)" ontouchend="menuTouchEnd1($idx)" style='left:{{moveDiv.adver[$idx].left}}px;top:{{moveDiv.adver[$idx].top}}px' for="{{c_box}}" @click="jwelfare($item.action,'c_box')" if="{{c_box && show_native}}">
+                <image src="{{$item.icon}}" if="{{$item.show}}" style="width:{{$item.pos.w}};"></image>
+            </div>
+
+            <image @click="tiaoVideo" if="{{videoIcon.show}}" src="{{videoIcon.url}}" ontouchstart="menuTouchStart3" ontouchmove="menuTouchMove3" ontouchend="menuTouchEnd3" style="width:{{Iconw}};position: fixed;left:{{moveDiv.menuStyle3.left}}px;top:{{moveDiv.menuStyle3.top?moveDiv.menuStyle3.top:''}}px;"></image>
+
+            <!-- 盒子 -->
+            <div class="imgFixa" ontouchstart="menuTouchStart" ontouchmove="menuTouchMove" ontouchend="menuTouchEnd" style='left:{{moveDiv.menuStyle.left}}px;top:{{moveDiv.menuStyle.top?moveDiv.menuStyle.top:""}}px;bottom:{{moveDiv.menuStyle.top?"":adInfo.icon.pos.b}}' if="{{adInfo.icon.show && show_native}}" @click="jingxb">
+                <image src="{{adInfo.icon.url}}" if="{{adInfo.icon.show}}" style="width:120px;"></image>
+            </div>
+
+            <!-- Banner -->
+            <!-- if="{{b_box}}" -->
+            <div style='background-color: rgba(0,0,0,.1);position: fixed;display: flex;justify-content: flex-end;flex-wrap: wrap;right:{{b_boxAd.right != "false"?b_boxAd.right:""}};top:{{b_boxAd.top != "false"?b_boxAd.top:""}};bottom:{{b_boxAd.bottom != "false"?b_boxAd.bottom:""}};left:{{b_boxAd.left != "false"?b_boxAd.left:""}};' if="{{diBool && show_native}}">
+                <div style='display: flex;justify-content: flex-end;flex-wrap: wrap;width:{{b_boxAd.w}};height:{{b_boxAd.h}};' if="{{b_box && b_box.show}}">
+                    <div class="imgFix" @click="jwelfare(b_boxImg[0].action,'b_box')" style="width:{{b_boxAd.w}};height:{{b_boxAd.h}};" if="{{b_box && b_box.show}}">
+                        <image src="{{b_boxImg[0].image}}" style="width:{{b_boxAd.w}};height:{{b_boxAd.h}};" if="{{b_boxImg[0].image}}"></image>
+                    </div>
+                    <image src="{{b_box.close_img}}" style='position: absolute;top:0px;right: 0px;width:50px;height:50px;' @click="diFun"></image>
+                </div>
+            </div>
+
+            <!-- 插屏 -->
+            <!-- if="{{a_box}}" -->
+            <div class="mask newBanner" if="{{banBool && show_native}}">
+                <div class="imgFix" style='width:{{quewidth}};' @click="jwelfare(a_boxImg[0].action,'a_box')" if="{{a_box && a_box.show}}">
+                    <image src="{{a_boxImg[0].image}}" id="newImg" if="{{a_box.show}}" style="width:{{quewidth}};"></image>
+                </div>
+                <image src="{{a_box.close_img}}" style='width:50px;height:50px;position: absolute;top:{{a_boxAd.top != "false"?a_boxAd.top:""}};right:40px;margin-top:-80px;' @click="banFun"></image>
+            </div>
+
+            <!-- 展开盒子 -->
+            <div class="mask" if="{{jBool && show_native}}" style="display: flex;flex-wrap: wrap;">
+                <div style="width: 695px;height:54px;justify-content: flex-end;margin:auto;margin-top: 56px;">
+                    <image src="https://file.scymob.com/bih.png" style="width:42px;height:42px;margin-right:2px;" @click="jingxa(adInfo.adicon_close.click_style,adInfo.adicon_close.url,'-1')"></image>
+                </div>
+                <div class="jingC" style="position: relative;">
+                    <swiper class="swiper" autoplay="{{autoPlay}}" interval="{{sliderValue}}" indicator="{{indicator}}" duration="{{durationValue}}" vertical="{{isVertical}}" loop="{{loopPlay}}">
+                        <div class="nDiv1" @click="jingxa($item.click_style,$item.url,$idx)" for="{{adInfo.newtop_ad.list}}">
+                            <image src="{{$item.image}}" style="width:750px;height:180px;"></image>
+                        </div>
+                    </swiper>
+                    <!-- <div class="nDiv1" @click="jingxa">
+	                            <image src="{{adInfo.top_ad.image}}" style="width:750px;height:180px;"></image>
+	                        </div> -->
+                    <list class="nDiv2" flex-direction="column" style="padding-bottom:80px;" columns="3" if="{{adInfo.icon.click_style == 0}}">
+                        <list-item class="nDiv3" for="{{adInfo.list}}" tid="uniqueId" @click="jwelfare($item.action,'d_box')">
+                            <!-- <div style="width:132px;height:132px;border-radius:32px;"> -->
+                            <image src="{{$item.icon}}" style="width:130px;height:130px;border-radius:18px;border:1px solid #D2D2D2;"></image>
+                            <!-- </div> -->
+                            <div style="width:150px; display: flex;justify-content: center;margin-top:5px"><text style="font-size:26px;color:#333333">{{$item.name}}</text></div>
+                            <div style="width:150px;display: flex;justify-content: center;margin-top:3px"><text style="font-size:20px;color:#A8A8A8">{{$item.title}}</text></div>
+                            <div style="width:95px;height:50px;background:linear-gradient(90deg,rgba(94,175,254,1),rgba(7,138,255,1));margin-top:18px;margin-bottom:18px;display: flex;justify-content: center;align-items: center;border-radius:5px;
+		"><text style="color:#ffffff;font-size:24px">查看</text></div>
+                        </list-item>
+
+                    </list>
+                    <list class="nDiv2" style="padding-bottom:80px" flex-direction="row " columns="1" if="{{adInfo.icon.click_style == 1}}">
+                        <list-item class="nDiv4" tid="uniqueId" style="padding-top:0px;padding-bottom:22px" for="{{adInfo.list}}" tid="uniqueId" @click="jwelfare($item.action,'d_box')">
+                            <image src="{{$item.icon}}" style="width:110px;height:110px;border-radius:18px;border:1px solid #D2D2D2;"></image>
+                            <div style="width:540px;height:100px;display:flex;flex-wrap:wrap;position: relative;">
+                                <div style="width:440px;height:40px;margin-top:10px;padding-left:26px;">
+                                    <text style="font-size:32px;color:#333333;">{{$item.name}}</text>
+                                </div>
+                                <div style="width:440px;height:40px;margin-top:5px;padding-left:26px;">
+                                    <text style="font-size:24px;color:#A8A8A8;">{{$item.title}}</text>
+                                </div>
+                                <div style="width:95px;height:50px;background:linear-gradient(90deg,rgba(94,175,254,1),rgba(7,138,255,1));margin-top:18px;margin-bottom:18px;display: flex;justify-content: center;align-items: center;border-radius:5px;
+		position: absolute;top:18px;right:26px"><text style="color:#ffffff;font-size:24px;">查看</text></div>
+                            </div>
+                        </list-item>
+                    </list>
+                </div>
+
+            </div>
+
+        </div>
+
+        <web class="web-comp" if="{{isWeb}}" src="{{webh5}}" allowthirdpartycookies="{{allow}}" id="web"></web>
+        <!-- 加载中 -->
+        <div class="maska" style="position:flex;top:0px;left:0px;right:0px;bottom:0px;background-color:#FFFFFF;display: flex;justify-content: center;align-items: center" if="{{!loging}}">
+            <image src="https://file.scymob.com/timg2.jpg" alt="" style="width:400px;"></image>
+        </div>
+    </div>
+
+    </div>
+</template>
+
+<script>
+    import router from '@system.router'
+    import fetch from '@system.fetch'
+    import allAreaNews from "../Common/areaInfo.js";
+    import prompt from '@system.prompt'
+    import device from '@system.device'
+    import storage from '@system.storage'
+    import publicData from "../Common/publicData.js"; //公共数据
+    import plus from "../Common/means.js"; //公共数据
+
+
+
+    import webview from '@system.webview'
+    export default {
+        private: {
+            jzBool: false,
+            story: {},
+            ctArr: [],
+            tjArr1: [],
+            xlArr: [],
+            jBool: false,
+            a: '',
+            stat: 0,
+            par: '30px',
+            isnBool: false,
+            webhv2: "1",
+            webh51: "",
+            aright: '0px',
+            bbottom: "100px",
+
+            autoPlay: true,
+            indicator: false,
+            loopPlay: true,
+            sliderValue: 4000,
+            durationValue: 1000,
+            isVertical: false,
+
+            isVertical1: true,
+            marginValue: '30px',
+            topValue: '210px',
+            isWeb: false,
+            webh5: "",
+            b: '',
+            listlArr: [],
+            token: '',
+            jArr: [],
+            titleArr: [],
+            listlArra: [],
+            backUrl: '',
+            beiarr: '',
+            plus: plus,
+            loging: false,
+            show_native: true,
+            regId: "",
+            adInfo: {
+                icon: {
+                    "show": false,
+                    "url": "",
+                    "click_style": 1,
+                    "pos": {
+                        "r": 0,
+                        "b": 200
+                    }
+                }
+            },
+            addInfo: {
+                show_H5: '',
+                show_native: '',
+            },
+            a_boxImg: {}, //插屏
+            a_boxAd: {}, //插屏
+            a_box: {
+                show: '',
+                ad: [],
+                close_img: ''
+            }, //插屏
+            b_box: {
+                show: '',
+                ad: [],
+                close_img: ''
+            }, //Banner
+            c_box: [], //浮标
+            banBool: false,
+            b_boxImg: {}, //banner
+            b_boxImga: '', //banner
+            b_boxAd: {
+                h: ''
+            }, //banner
+            windowWidth: '',
+            quewidth: '',
+            diBool: false,
+            userid: '',
+            dataObj: {
+                "userId": '',
+                "userInfo": {
+                    "advertisingId": '',
+                    "userId": '',
+                    "serial": '',
+                    "oaid": '',
+                },
+                "deviceInfo": ''
+            },
+            //最新添拖动
+            moveDiv: {
+                menuStyle: {
+                    left: 20,
+                    top: 20,
+                    disX: 0,
+                    disY: 0,
+                    beginDrag: false
+                },
+                menuStyle1: {
+                    left: 600,
+                    top: 600,
+                    disX: 0,
+                    disY: 0,
+                    beginDrag: false
+                },
+                menuStyle3: {
+                    left: 0,
+                    top: 750,
+                    disX: 0,
+                    disY: 0,
+                    beginDrag: false
+                },
+                adver: [{
+                    left: 0,
+                    top: 0,
+                    disX: 0,
+                    disY: 0,
+                    beginDrag: false
+                }]
+
+            },
+            videoIcon: {},
+            Iconw: ''
+
+        },
+        onShow() {
+            APP_STATISTICS.page_show(this); //在onShow方法的第一行加入此代码
+            var that = this;
+
+            storage.get({
+                    key: 'beiarr',
+                    success: function(data) {
+                        if (data.length != 0) {
+                            that.beiarr = data ? JSON.parse(data) : [];
+                        }
+                    }
+                })
+                //App业务代码
+                // if (!that.beiarr) {
+                //     storage.set({
+                //         key: "beiarr",
+                //         value: that.beiarr
+                //     })
+                // }
+            storage.get({
+                key: 'dataObj',
+                success: function(data) {
+                    if (!data) {
+                        that.gongFun()
+                    }
+                }
+            })
+
+            storage.get({
+                key: 'userid',
+                success: function(data) {
+                    if (!data) {
+                        that.userid = data ? JSON.parse(data) : ''
+                    }
+                }
+            })
+
+            storage.get({
+                key: 'regId',
+                success: function(data) {
+                    that.regId = data
+                }
+            })
+            storage.get({
+                key: 'arr',
+                success: function(data) {
+                    that.arr = data ? JSON.parse(data) : []
+                }
+            })
+
+            storage.get({
+                key: 'lang',
+                success: function(data) {
+                    that.wem = data
+                    if (data) {
+                        that.obj = JSON.parse(data)
+                    }
+                    storage.get({
+                        key: 'isbool',
+                        success: function(data) {
+                            that.isBool = data
+
+                        }
+                    })
+                },
+                fail: function(data, code) {
+                }
+            })
+        },
+        onInit() {
+            this.getoken()
+            this.getChannelIsH()
+            this.getList()
+            this.getList1()
+            this.gongFun()
+            this.hotFun()
+                // this.$page.setTitleBar({ text: 'About' })
+        },
+        onHide() {
+            APP_STATISTICS.page_hide(this); //在onHide方法的第一行加入此代码
+            //...业务代码
+        },
+        tiao() {
+            router.push({
+                uri: '/Next',
+                params: {
+                    url: this.backUrl
+                }
+            })
+        },
+        tiaoCardDemo(id) {
+            router.push({
+                uri: '/CardDemo',
+                params: {
+                    id: id
+                }
+            })
+        },
+        tiaoDstory() {
+            router.push({
+                uri: '/Dstory'
+            })
+        },
+
+
+        //轻粒子统计
+        jwelfare(action, click) {
+            APP_STATISTICS && APP_STATISTICS.track_event('点击广告');
+            if (click == 'a_box') {
+                APP_STATISTICS && APP_STATISTICS.track_event('点击插屏');
+                APP_STATISTICS && action.id && APP_STATISTICS.track_event('点击插屏', '点击插屏_' + action.id);
+            } else if (click == 'b_box') {
+                APP_STATISTICS && APP_STATISTICS.track_event('点击banner');
+                APP_STATISTICS && action.id && APP_STATISTICS.track_event('点击banner', '点击banner_' + action.id);
+            } else if (click == 'c_box') {
+                APP_STATISTICS && APP_STATISTICS.track_event('点击浮标');
+                APP_STATISTICS && action.id && APP_STATISTICS.track_event('点击浮标', '点击浮标_' + action.id);
+            } else if (click == 'd_box') {
+                APP_STATISTICS && APP_STATISTICS.track_event('点击盒子');
+                APP_STATISTICS.track_event('故事精选_' + action.id, {
+                    "故事精选_": action.id,
+                });
+                APP_STATISTICS && action.id && APP_STATISTICS.track_event('点击盒子', '点击盒子_' + action.id);
+            }
+            plus.welfarea(action.click_type, action.url, action.click_url ? action.click_url : '')
+        },
+
+
+        banFun() {
+            this.banBool = !this.banBool
+        },
+
+        jingxa(data, url, id) {
+            this.jBool = !this.jBool
+            if (data == 1) {
+                if (id != '-1') {
+                    APP_STATISTICS && APP_STATISTICS.track_event('点击盒子banner');
+                    APP_STATISTICS && APP_STATISTICS.track_event('点击盒子banner', '点击盒子_' + id);
+                    plus.welfarea(data, url ? url : '')
+                } else {
+                    APP_STATISTICS && APP_STATISTICS.track_event('点击盒子关闭');
+                    APP_STATISTICS && APP_STATISTICS.track_event('点击盒子关闭', '点击盒子_' + id);
+                    plus.welfarea(data, url ? url : '')
+                }
+            }
+        },
+        jingxb(data, url, id) {
+            this.jBool = !this.jBool
+        },
+
+        hotFun() {
+            var that = this;
+            fetch.fetch({
+                url: 'https://mini.scymob.com/weapp-pddk/news/getAppNewsList?channel=kuai_fyb&pkgName=undefined&ish5=1&userId=80455687-4947-4q74-87r3-q3tey69t526r&brand=oppo&version=13&pid=1&pageNo=1',
+                method: 'get',
+                resphonseType: 'json',
+                header: {
+                    'Content-Type': 'application/json',
+                },
+                success: function(res) {
+                    var resdata = JSON.parse(res.data);
+                    if (resdata.code == 0) {
+                        that.videoIcon = resdata.data.videoInfo.icon
+                        that.Iconw = that.videoIcon.pos.w
+                        if (that.videoIcon.pos.r.replace(/px/g, "") == 0) {
+                            that.videoIcon.pos.left = (750 - that.videoIcon.pos.w.replace(/px/g, "")) + 'px'
+                        }
+                        let obj = {
+                            left: that.videoIcon.pos.left.replace(/px/g, ""),
+                            top: that.videoIcon.pos.t.replace(/px/g, ""),
+                            disX: 0,
+                            disY: 0,
+                            beginDrag: false
+                        }
+                        that.moveDiv.menuStyle3 = obj
+                    }
+                },
+                fail: function(err) {}
+            })
+        },
+
+
+        // plus.promptFun(url)npm 
+        //是否H5
+        getChannelIsH() {
+            var that = this;
+            storage.get({
+                key: 'userid',
+                success: function(data) {
+                    that.userid = data;
+                    plus.getInfoa('getInfo').then(res => {
+                        let url = publicData.getTabConfig + '&brand=' + res.brand + '&userId=' + that.userid + '&pkgName=' + that.packageName + '&os=' + res.osType
+                        plus.requiref(url, {}, 'POST').then(data => {
+                            if (JSON.parse(data.data).code == 0) {
+                                let resdata = JSON.parse(data.data);
+                                if (that.userid == '') {
+                                    storage.set({
+                                        key: 'userid',
+                                        value: resdata.data.userId
+                                    })
+                                    that.userid = resdata.data.userId;
+                                }
+                                if (resdata.data.docking_type == 3) {
+                                    that.webh5 = resdata.data.h5;
+                                    that.isWeb = true;
+                                }
+                                that.gongFun()
+
+                                // 如果是H5 
+                                var callGetAds = resdata.data.callGetAds
+                                let time = setTimeout(() => {
+                                    if (callGetAds) {
+                                        that.getAppdasinfo()
+                                    }
+                                    that.PostDeviceInfo()
+                                    that.PostPullInfoID()
+                                    that.loging = true
+                                }, 800)
+                            }
+                        })
+                    })
+                }
+            })
+        },
+
+
+        //获取广告
+        getAppdasinfo() {
+            const that = this;
+            plus.getInfoa('getInfo').then(res => {
+                let url = publicData.getAppdasinfo + '&brand=' + res.brand + '&userId=' + that.userid + '&pkgName=' + that.packageName + '&os=' + res.osType
+                that.windowWidth = res.windowWidth;
+                that.windowHeight = res.windowHeight;
+
+                //获取广告
+                plus.requiref(url, {}, 'POST').then(data => {
+                    let resdata = JSON.parse(data.data);
+                    // that.a=JSON.stringify(resdata)
+                    if (resdata.data && resdata.data.adInfo) {
+                        that.adInfo = resdata.data.adInfo
+                        that.moveDiv.menuStyle.left = 750 - 120;
+                        that.moveDiv.menuStyle.top = "";
+
+                        that.addInfo = that.adInfo.ad
+                        that.a_box = that.adInfo.ad.data.a_box;
+                        that.b_box = that.adInfo.ad.data.b_box;
+                        that.a_boxImg = that.adInfo.ad.data.a_box.ad;
+                        that.a_boxAd = that.adInfo.ad.data.a_box.pos;
+                        let width = that.adInfo.ad.data.a_box.pos.w;
+                        that.quewidth = width;
+                        that.banBool = that.a_box.show;
+                        that.b_boxImg = that.adInfo.ad.data.b_box.ad;
+                        that.b_boxAd = that.adInfo.ad.data.b_box.pos;
+                        that.diBool = that.adInfo.ad.data.b_box.show
+                        that.c_box = that.adInfo.ad.data.c_box;
+                        //最新添拖动
+                        that.moveDiv.adver = [];
+                        let newmoveDiv = that.moveDiv.adver;
+                        for (let i in that.c_box) {
+                            if (that.c_box[i].pos.left == "false") {
+                                if (that.c_box[i].pos.right.replace(/px/g, "") == 0) {
+                                    that.c_box[i].pos.left = (750 - that.c_box[i].pos.w.replace(/px/g, "")) + 'px'
+                                }
+                            }
+
+                            let obj = {
+                                left: that.c_box[i].pos.left.replace(/px/g, "") >= 500 ? 750 - that.c_box[i].pos.w.replace(/px/g, "") : that.c_box[i].pos.left.replace(/px/g, ""),
+                                top: that.c_box[i].pos.top.replace(/px/g, ""),
+                                disX: 0,
+                                disY: 0,
+                                beginDrag: false
+                            }
+                            that.moveDiv.adver.push(obj)
+                        }
+                        that.show_native = resdata.data.adInfo.ad.show_native
+                    }
+                    if (resdata.data.docking_type == 3) {
+                        that.webh5 = resdata.data.h5;
+                        that.isWeb = true;
+                    }
+                })
+            })
+        },
+
+        //上传设备
+        PostDeviceInfo() {
+            var that = this;
+            storage.get({
+                key: 'dataObj',
+                success: function(data) {
+                    that.dataObj = data ? JSON.parse(data) : that.dataObj;
+                    plus.getInfoa('getInfo').then(res => {
+                        let url = publicData.PostDeviceInfo + '&brand=' + res.brand + '&userId=' + that.userid + '&pkgName=' + that.packageName + '&os=' + res.osType
+                        plus.requiref(url, that.dataObj, 'POST').then(data => {})
+                    })
+                }
+            })
+        },
+
+        //上传推送id
+        PostPullInfoID() {
+            var that = this;
+            plus.getInfoa('getInfo').then(res => {
+                let url = publicData.PostPullInfoID + '&brand=' + res.brand + '&userId=' + that.userid + '&pkgName=' + that.packageName + '&os=' + res.osType + '&regId=' + that.regId
+                plus.requiref(url, {}, 'POST').then(data => {})
+            })
+        },
+
+        //获取设备信息
+        gongFun() {
+            var that = this;
+            that.dataObj.userId = that.userid ? that.userid : '';
+            plus.getInfoa('getInfo').then(res => {
+                    that.dataObj.deviceInfo = res;
+                    storage.set({
+                        key: 'dataObj',
+                        value: that.dataObj
+                    })
+                }) //获取设备
+            plus.getInfoa('getUserId').then(res => {
+                    that.dataObj.userInfo.userId = res;
+                    storage.set({
+                        key: 'dataObj',
+                        value: that.dataObj
+                    })
+                }) //获取设备唯一id
+            plus.getInfoa('getAdvertisingId').then(res => {
+                    that.dataObj.userInfo.advertisingId = res;
+                    storage.set({
+                        key: 'dataObj',
+                        value: that.dataObj
+                    })
+                }) //获取广告唯一标识
+                // plus.getInfoa('getSerial').then(res => {
+                //     that.dataObj.userInfo.serial = res;
+                //     storage.set({
+                //         key: 'dataObj',
+                //         value: that.dataObj
+                //     })
+                // }) 
+                //获取设备序列号
+            plus.getInfoa('getOAID').then(res => {
+                    that.dataObj.userInfo.oaid = res;
+                    storage.set({
+                        key: 'dataObj',
+                        value: that.dataObj
+                    })
+                }) //返回厂商设备标识符中的OAID（匿名设备标识符）
+        },
+
+        diFun() {
+            this.diBool = !this.diBool;
+        },
+        getoken() {
+            const that = this;
+            device.getInfo({
+                success: function(ret) {
+                    fetch.fetch({
+                        url: 'https://mini.scymob.com/weapp-pddk/gettokens/getoken',
+                        method: 'get',
+                        resphonseType: 'json',
+                        header: {
+                            'Content-Type': 'application/json',
+                        },
+                        success: function(res) {
+                            var resphose = res.data;
+                            if (JSON.parse(resphose).code == 0) {
+                                that.token = JSON.parse(resphose).data
+                            }
+                        },
+                        fail: function(err) {}
+                    })
+                }
+            })
+
+        },
+        getList() {
+            const that = this;
+            device.getInfo({
+                success: function(ret) {
+                    fetch.fetch({
+                        url: 'https://www.dudugushi.com/anonymous/subject/?recommend=1',
+                        method: 'get',
+                        resphonseType: 'json',
+                        header: {
+                            'Content-Type': 'application/json',
+                        },
+                        success: function(res) {
+                            var resphose = JSON.parse(res.data);
+                            that.ctArr = resphose.data
+                            console.log(that.ctArr)
+                        },
+                        fail: function(err) {}
+                    })
+                }
+            })
+        },
+        getList1() {
+            const that = this;
+            device.getInfo({
+                success: function(ret) {
+                    fetch.fetch({
+                        url: 'https://www.dudugushi.com/anonymous/story/recommendation',
+                        method: 'get',
+                        resphonseType: 'json',
+                        header: {
+                            'Content-Type': 'application/json',
+                        },
+                        success: function(res) {
+                            if (res.code == 200) {
+                                var resphose = JSON.parse(res.data);
+                                that.tjArr1 = resphose.story_list;
+
+                                for (let i in that.tjArr1) {
+                                    let num = parseInt(3 * Math.random())
+                                    if (num == 0) {
+                                        num = 1
+                                    }
+                                    that.tjArr1[i].tags = that.tjArr1[i].tags.slice(1, num + 1)
+                                }
+                            }
+
+                        },
+                        fail: function(err) {}
+                    })
+                }
+            })
+
+        },
+        getLista() {
+            const that = this;
+            that.jzBool = true
+            device.getInfo({
+                success: function(ret) {
+                    fetch.fetch({
+                        url: 'https://www.dudugushi.com/anonymous/story/recommendation/history/?page=' + that.stat + '&count=10',
+                        method: 'get',
+                        resphonseType: 'json',
+                        header: {
+                            'Content-Type': 'application/json',
+                        },
+                        success: function(res) {
+                            var resphose = JSON.parse(res.data);
+                            that.jzBool = false
+                            if (that.stat > resphose.total_pages) {
+                                return
+                            }
+
+                            that.story = resphose.total_pages
+                            for (let i in resphose.story_list) {
+                                let num = parseInt(3 * Math.random())
+                                if (num == 0) {
+                                    num = 1
+                                }
+                                resphose.story_list[i].tags = resphose.story_list[i].tags.slice(1, num + 1)
+                            }
+                            that.xlArr = that.xlArr.concat(resphose.story_list);
+
+                        },
+                        fail: function(err) {}
+                    })
+                }
+            })
+
+        },
+        chuwallFun() {
+            this.stat = this.stat + 1;
+            this.getLista()
+        },
+        service() {
+            this.serviceBool = !this.serviceBool
+        },
+
+
+        actionFun(e, url) {
+            if (e == 1) {
+                router.push({
+                    uri: '/DemoDetail',
+                    params: {
+                        url: url
+                    }
+                })
+            } else {
+                router.push({
+                    uri: url
+                })
+            }
+        },
+
+        //最新添拖动
+        menuTouchStart(event) {
+            this.moveDiv.beginDrag = true;
+            this.moveDiv.menuStyle.disX = event.touches[0].offsetX;
+            this.moveDiv.menuStyle.disY = event.touches[0].offsetY;
+        },
+        menuTouchMove(event) {
+            if (this.moveDiv.beginDrag) {
+                event.stopPropagation()
+                let resetDeviceScreenWidth = event.touches[0].clientX > device.windowWidth ? ((device.windowWidth / device.screenDensity) * 3) : device.windowWidth;
+                let resetDeviceScreenHeight = event.touches[0].clientY > device.windowHeight ? ((device.windowHeight / device.screenDensity) * 3) : device.windowHeight;
+                let menuStyleLeft = event.touches[0].clientX - this.moveDiv.menuStyle.disX;
+                let menuStyleTop = event.touches[0].clientY - this.moveDiv.menuStyle.disY;
+                this.moveDiv.menuStyle.left = menuStyleLeft > 0 ? (menuStyleLeft > (resetDeviceScreenWidth - 204) ? resetDeviceScreenWidth - 204 : menuStyleLeft) : 0;
+                this.moveDiv.menuStyle.top = menuStyleTop > 0 ? (menuStyleTop > (resetDeviceScreenHeight - 204) ? resetDeviceScreenHeight - 204 : menuStyleTop) : 0;
+            }
+        },
+        menuTouchEnd(data) {
+
+            this.moveDiv.beginDrag = false;
+            this.moveDiv.menuStyle.disX = this.moveDiv.menuStyle.disY = 0;
+        },
+
+        // 红包
+        menuTouchStart1(data, event) {
+            this.moveDiv.adver[data].beginDrag = true;
+            this.moveDiv.adver[data].disX = event.touches[0].offsetX;
+            this.moveDiv.adver[data].disY = event.touches[0].offsetY;
+        },
+        menuTouchMove1(data, event) {
+            if (this.moveDiv.adver[data].beginDrag) {
+                event.stopPropagation()
+                let resetDeviceScreenWidth = event.touches[0].clientX > device.windowWidth ? ((device.windowWidth / device.screenDensity) * 3) : device.windowWidth;
+                let resetDeviceScreenHeight = event.touches[0].clientY > device.windowHeight ? ((device.windowHeight / device.screenDensity) * 3) : device.windowHeight;
+                let menuStyleLeft = event.touches[0].clientX - this.moveDiv.adver[data].disX;
+                let menuStyleTop = event.touches[0].clientY - this.moveDiv.adver[data].disY;
+                this.moveDiv.adver[data].left = menuStyleLeft > 0 ? (menuStyleLeft > (resetDeviceScreenWidth - 204) ? resetDeviceScreenWidth - 204 : menuStyleLeft) : 0;
+                this.moveDiv.adver[data].top = menuStyleTop > 0 ? (menuStyleTop > (resetDeviceScreenHeight - 204) ? resetDeviceScreenHeight - 204 : menuStyleTop) : 0;
+            }
+        },
+        menuTouchEnd1(data) {
+            this.moveDiv.adver[data].beginDrag = false;
+            this.moveDiv.adver[data].disX = this.moveDiv.adver[data].disY = 0;
+        },
+        tiaoVideo() {
+            router.push({
+                uri: '/Video'
+            })
+        },
+
+
+
+
+    }
+
+    function Trim(str, is_global) {
+        var result;
+        result = str.replace(/(^\s+)|(\s+$)/g, "");
+        if (is_global.toLowerCase() == "g") {
+            result = result.replace(/\s/g, "");
+        }
+        return result;
+    }
+</script>
+
+<style>
+    .newXuan {
+        width: 678px;
+        height: 92px;
+        margin-left: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        color: #787878;
+        background-color: #f7f7f7;
+    }
+    
+    .xImg {
+        width: 40px;
+        height: 40px;
+        margin-right: 40px;
+    }
+    
+    .tijiao {
+        width: 640px;
+        height: 80px;
+        border-radius: 10px;
+        background-color: #dba95e;
+        margin-left: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #ffffff;
+        font-size: 30px;
+    }
+    
+    .demo-page {
+        flex-direction: column;
+        background-color: #ffffff;
+    }
+    
+    .title {
+        font-size: 40px;
+        text-align: center;
+    }
+    
+    .btn {
+        width: 550px;
+        height: 86px;
+        margin-top: 75px;
+        border-radius: 43px;
+        background-color: #09ba07;
+        font-size: 30px;
+        color: #ffffff;
+        position: fixed;
+        bottom: 0px;
+        left: 50px;
+    }
+    
+    .topImg {
+        width: 750px;
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+    }
+    
+    .bigDiv {
+        width: 750px;
+        height: 940px;
+        border: 1px solid #000000;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        margin-top: 50px;
+    }
+    
+    .newIpW {
+        width: 678px;
+        height: 92px;
+    }
+    
+    .nDiv {
+        width: 678px;
+        height: 92px;
+        margin-left: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        color: #333333;
+        background-color: #d4d4d4;
+    }
+    
+    .nDivF {
+        width: 678px;
+        height: 92px;
+        margin-left: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 28px;
+        color: #333333;
+        background-color: #ffffff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+    
+    .newIpn {
+        width: 426px;
+        height: 92px;
+    }
+    /* 遮罩层 */
+    
+    .mask {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1001;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .jingC {
+        width: 695px;
+        height: 911px;
+        margin-left: 30px;
+        border-radius: 15px;
+        background-color: #ffffff;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        position: relative;
+    }
+    
+    .nDiv1 {
+        width: 695px;
+        /* height: 62px; */
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        color: #0184ff;
+        /* margin-top:50px; */
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .nDiv2 {
+        width: 695px;
+        height: 784px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        font-size: 28px;
+        color: #0184ff;
+        margin-top: 20px;
+        overflow: hidden;
+        align-items: flex-start;
+    }
+    
+    .nDiv3 {
+        width: 150px;
+        height: 280px;
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 28px;
+        color: #0184ff;
+        margin-top: 20px;
+        justify-content: center;
+        overflow: hidden;
+        margin-right: 30px;
+        margin-left: 30px;
+        padding-left: 20px;
+    }
+    
+    .nDiv4 {
+        width: 695px;
+        height: 140px;
+        display: flex;
+        justify-content: flex-start;
+        font-size: 28px;
+        color: #0184ff;
+        margin-top: 1px;
+        justify-content: center;
+        overflow: hidden;
+        padding-left: 20px;
+    }
+    
+    .xuanK {
+        width: 750px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .xuanK1 {
+        width: 372px;
+        height: 430px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    /* 公共 */
+    
+    .gong_div {
+        width: 750px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding-bottom: 150px;
+    }
+    
+    .back_img {
+        height: 200px;
+        border: 1px solid #000000;
+    }
+    
+    .tabsa {
+        width: 750px;
+        background-color: #ffffff;
+        position: fixed;
+        bottom: 10px;
+        top: 0px;
+        left: 0px;
+    }
+    
+    .newBanner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .imgFixa {
+        position: fixed;
+    }
+    
+    .imgFix {
+        position: absolute;
+    }
+    /* 遮罩层 */
+    
+    .mask {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1001;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .maska {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1001;
+        background-color: #000000;
+    }
+    
+    .jingC {
+        width: 695px;
+        height: 911px;
+        margin-left: 30px;
+        border-radius: 15px;
+        background-color: #ffffff;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        position: relative;
+    }
+    
+    .nDiv1 {
+        width: 695px;
+        /* height: 62px; */
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        color: #0184ff;
+        /* margin-top:50px; */
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .nDiv2 {
+        width: 695px;
+        height: 784px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        font-size: 28px;
+        color: #0184ff;
+        margin-top: 20px;
+        overflow: hidden;
+        align-items: flex-start;
+    }
+    
+    .nDiv3 {
+        width: 150px;
+        height: 280px;
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 28px;
+        color: #0184ff;
+        margin-top: 20px;
+        justify-content: center;
+        overflow: hidden;
+        margin-right: 30px;
+        margin-left: 30px;
+        padding-left: 20px;
+    }
+    
+    .nDiv4 {
+        width: 695px;
+        height: 140px;
+        display: flex;
+        justify-content: flex-start;
+        font-size: 28px;
+        color: #0184ff;
+        margin-top: 1px;
+        justify-content: center;
+        overflow: hidden;
+        padding-left: 20px;
+    }
+    
+    .swiper {
+        width: 695px;
+        height: 180px;
+    }
+    
+    .flex {
+        display: flex;
+    }
+    
+    .flex_wrap {
+        flex-wrap: wrap;
+    }
+    
+    .flex_alignc {
+        align-content: center;
+    }
+    
+    .flex_justifyc {
+        justify-content: center;
+    }
+    
+    .flex_justifysb {
+        justify-content: space-between;
+    }
+    
+    .flex_justifyst {
+        justify-content: flex-start;
+    }
+    
+    .flex_justifyse {
+        justify-content: flex-end;
+    }
+    
+    .load-more {
+        justify-content: center;
+    }
+</style>

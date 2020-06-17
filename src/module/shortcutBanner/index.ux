@@ -1,0 +1,101 @@
+
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="demo-page">
+    <!-- <image src="" @click="shortcutFun" style="position: fixed;bottom: 0px;left: 0px;"></image> -->
+    <div class="mask" if="{{isBool}}">
+      <div class="di_we flex_W" style="margin-left:30px;margin-top:50px;">
+        <image src="https://file.scymob.com/kuai_bannerI.png" style="width:750px;">
+          <image src="https://file.scymob.com/kuai_li.png" class="li_j" @click="shortcutFun"></image>
+          <div class="li_n" @click="isFun"><text style="font-size:24px;color:#ffffff">我知道了</text></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import shortcut from '@system.shortcut'
+import prompt from '@system.prompt'
+
+export default {
+
+  props: [
+    'bobj'
+  ],
+  private: {
+    isBool: true
+  },
+
+  public: {
+    action: null
+  },
+  onInit() {
+
+  },
+  onShow() {
+    
+  },
+  shortcutFun() {
+    var that=this
+    shortcut.install({
+      success: function () {
+        prompt.showToast({
+          message: '添加成功'
+        })
+        that.isFun()
+      }
+    })
+  },
+  isFun() {
+    this.isBool = !this.isBool
+  },
+
+
+}
+
+</script>
+
+<style>
+.demo-page {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 遮罩层 */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1001;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.flex_W {
+  display: flex;
+  flex-wrap: wrap;
+}
+.di_we {
+  position: relative;
+  height: 960px;
+}
+.li_j {
+  width: 498px;
+  position: absolute;
+  bottom: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 101px;
+}
+.li_n {
+  width: 498px;
+  position: absolute;
+  bottom: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 101px;
+}
+</style>

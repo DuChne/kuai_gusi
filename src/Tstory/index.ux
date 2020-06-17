@@ -1,0 +1,207 @@
+
+<import name="gsList" src="../module/gsList/index.ux"></import>
+
+<template>
+  <div class="demo-page">
+    <div style="width:750px;">
+      <!-- 列表 -->
+      <list class="tabsa " onscrollbottom="chuwallFun" style="padding-top:30px;">
+        <list-item class="gong_div flex flex_wrap flex_justifyc;" style="display: flex;justify-content: center;">
+          <div style="padding：30px;width:750px;display: flex;justify-content: center;margin-bottom:30px;"><text style="font-size:50px;font-weight: bold">{{story.title}}</text></div>
+          <image src="https://dudu-image-1253462148.image.myqcloud.com/story/{{story.picture}}" style="margin-bottom:60px;width:690px;border-radius: 10px"></image>
+          <div style="margin-left:30px;">
+            <gsList list="{{xlArr}}"></gsList>
+          </div>
+          <div style="padding:20px;" if="{{stat >= story.total_pages}}"><text style="font-size:24px;color:#999999">我是有底线的~</text></div>
+
+        </list-item>
+        <list-item type="loadMore" class="load-more" if="{{jzBool}}">
+          <progress type="circular"></progress>
+          <text>加载更多</text>
+        </list-item>
+      </list>
+
+    </div>
+  </div>
+</template>
+
+<script>
+
+import router from '@system.router'
+import storage from '@system.storage'
+import prompt from '@system.prompt'
+import fetch from '@system.fetch'
+
+export default {
+  protected: {
+    stat: 1,
+    id: '',
+    xlArr: [],
+    jzBool: false,
+    story: {},
+    type: ''
+  },
+
+  onInit() {
+    this.id = this.$page.query.id;
+    this.type = this.$page.query.type;
+    console.log(this.id,'最后')
+    this.history()
+  },
+  onShow() {
+
+  },
+  createShortcut() {
+  },
+  chuwallFun() {
+    this.stat = this.stat + 1;
+    this.history()
+  },
+
+  history() {
+    var that = this;
+    that.jzBool = true;
+    var url = ''
+    if (that.type == 'series') {
+      url = 'https://www.dudugushi.com/anonymous/series/' + that.id + '/story/?page=' + that.stat + '&count=10'
+    } else {
+      url = 'https://www.dudugushi.com/anonymous/subject/' + that.id + '/story/?page=' + that.stat + '&count=10'
+    }
+    fetch.fetch({
+      url: url,
+      method: 'get',
+      resphonseType: 'json',
+      header: {
+        'Content-Type': 'application/json',
+      },
+      success: function (res) {
+        var resphose = JSON.parse(res.data);
+        console.log(resphose,that.stat,resphose.total_pages)
+
+        that.jzBool = false
+
+        if (that.stat > resphose.total_pages) {
+          return
+        }
+        that.story = resphose
+        for (let i in resphose.data) {
+          let num = parseInt(3 * Math.random())
+          if (num == 0) {
+            num = 1
+          }
+          resphose.data[i].tags = resphose.data[i].tags.slice(1, num + 1)
+        }
+        console.log(resphose.data)
+        that.xlArr = that.xlArr.concat(resphose.data);
+      },
+      fail: function (err) { }
+    })
+  }
+}
+
+function fun_date(aa) {
+  var date1 = new Date(),
+    time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate();//time1表示当前时间
+  var date2 = new Date(date1);
+  date2.setDate(date1.getDate() + aa);
+  var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+  return time2;
+}
+</script>
+
+<style>
+@import "../Common/public.css";
+
+.demo-page {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+.tabsa {
+  width: 750px;
+  background-color: #ffffff;
+  position: fixed;
+  bottom: 10px;
+  top: 0px;
+  left: 0px;
+}
+.bei {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  border-bottom: 1px solid #999999;
+  width: 750px;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.beia {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: flex-end;
+  height: 80px;
+  border-bottom: 1px solid #999999;
+  width: 750px;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.flex_sb {
+  display: flex;
+  justify-content: space-between;
+}
+.flex_a {
+  display: flex;
+  flex-wrap: wrap;
+}
+.flex {
+  display: flex;
+}
+.flext {
+  display: flex;
+  justify-content: center;
+}
+.neir {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  top: 0px;
+  background-color: #ffffff;
+}
+.tianj {
+  width: 300px;
+  margin: auto;
+  margin-top: 30px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #000000;
+}
+/* 遮罩层 */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1001;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+/* 公共 */
+.gong_div {
+  width: 750px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-bottom: 150px;
+}
+</style>

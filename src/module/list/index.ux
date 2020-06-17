@@ -1,0 +1,116 @@
+
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="demo-page">
+    <div class="liDiv" for="{{list}}" @longpress="chuFun($item)">
+      <div class="flex" style="height: 120px;">
+        <div class="yuan" style="background-color:{{$item.color}}"><text style="font-size:40px;font-weight: bold;color:#ffffff">{{$item.class}}</text></div>
+        <div class="flex_w" style="width:200px;margin-left:20px;">
+          <div style="width:200px"><text style="font-size:30px;">{{$item.title}}</text></div>
+          <div style="width:200px"><text style="font-size:24px;color:#999999">{{$item.remark}}</text></div>
+        </div>
+      </div>
+      <div>
+        <text style="color:{{$item.color}};font-size:36px;" if="{{$item.type == 'expend'}}">-{{$item.money}}</text>
+        <text style="color:{{$item.color}};font-size:36px;" if="{{$item.type == 'income'}}">{{$item.money}}</text>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: [
+    'list'
+  ],
+  private: {
+
+  },
+  onMenuPress() {
+    this.$app.$def.showMenu()
+  },
+  public: {
+    action: null
+  },
+  onInit() {
+    console.log()
+  },
+  onShow() {
+
+  },
+  chuFun(val) {
+    this.$emit('delFun', {
+      isBool: true,
+      val: val
+    })
+  }
+}
+
+
+
+function GetRequest(h5url) {
+  var theRequest = new Object(),
+    url = h5url;
+  if (url.indexOf("?") != -1) {
+    var str = url.split('?'),
+      strs = str[1].split('&');
+    for (var i = 0; i < strs.length; i++) {
+      var strsAgr = unescape(strs[i].split('=')[1]);
+      if (strsAgr.indexOf("#") != -1) strsAgr = strsAgr.split("#")[0];
+      theRequest[strs[i].split('=')[0]] = strsAgr;
+    }
+  }
+  return theRequest;
+}
+
+</script>
+
+<style>
+.demo-page {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-size: 40px;
+  text-align: center;
+}
+.liDiv {
+  width: 648px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  /* padding: 20px; */
+  border-bottom: 1px solid #aaaaaa;
+}
+.yuan {
+  width: 80px;
+  height: 80px;
+  background-color: #ff6454;
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.yuana {
+  width: 80px;
+  height: 80px;
+  background-color: #51a284;
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex_w {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+</style>

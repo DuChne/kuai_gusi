@@ -1,0 +1,136 @@
+<template>
+  <div class="demo-page">
+    <div class="flex flex_wrap flex_justifyc" style="width: 750px;">
+      <div style="width: 690px;margin-top:30px;" class="flex flex_justifyc"><text style="font-size:45px;font-weight: bold">{{story.title}}</text></div>
+      <div style="width: 690px;margin-top:30px;margin-bottom:30px;" class="positionR">
+        <image src="https://dudu-image-1253462148.image.myqcloud.com/story/{{story.picture}}" style="width:690px;border-radius: 10px;" alt=""></image>
+        <image src="../Common/player.png" class="positionA" style="150px;bottom:0px;right:60px;" @click="audioPlays(story.audio)"></image>
+      </div>
+      <div style="width: 690px;height:35px;" class="flex flex_alignc">
+        <div style="width:10px;background-color: #FF946E;height:35px;"></div>
+        <div style="margin-left:10px"><text style="font-size:35px;font-weight: bold">故事概要</text></div>
+      </div>
+      <div style="width: 670px;margin-top:30px;"><text style="font-size:30px;color:#999999;line-height: 50px;">{{story.description}}</text></div>
+      <div style="width: 690px;height:35px;margin-top:30px;" class="flex flex_alignc">
+        <div style="width:10px;background-color: #FF946E;height:35px;"></div>
+        <div style="margin-left:10px"><text style="font-size:35px;font-weight: bold">教育意义</text></div>
+      </div>
+      <div style="width: 670px;margin-top:30px;" class="flex flex_wrap">
+        <div style="width: 670px;"><text style="font-size:30px;color:#999999;line-height: 50px;">{{story.significance}}</text></div>
+        <div style="width: 670px;margin-top:10px;margin-bottom:50px;" class="flex flex_wrap">
+          <!-- <div for="(i,personItem) in $item.tags" style="padding-left:15px;padding-right:15px;border-radius: 20px;background-color:#F6F6F6;margin-right:10px;"><text style="font-size:18px;color#9E9E9E">{{personItem.name}}</text></div> -->
+          <div style="padding-left:15px;padding-right:15px;border-radius: 20px;background-color:#F6F6F6;margin-right:10px;margin-bottom:15px;" for="{{story.tags}}" if="{{$idx != 0}}"><text style="font-size:22px;color#9E9E9E">{{$item.name}}</text></div>
+        </div>
+      </div>
+      <div style="width:750px;height:20px;background-color:#F4F4F4;margin-top:20px"></div>
+      <div style="width: 690px;height:35px;margin-top:30px;" class="flex flex_alignc">
+        <div style="width:10px;background-color: #FF946E;height:35px;"></div>
+        <div style="margin-left:10px"><text style="font-size:35px;font-weight: bold">故事概要</text></div>
+      </div>
+      <div style="width: 640px;padding-bottom:50px;padding-top:20px;"><text style="font-size:30px;color:#999999;line-height: 50px;text-align:justify;">{{story.content}}</text></div>
+
+    </div>
+  </div>
+</template>
+
+<script>
+
+import router from '@system.router'
+import storage from '@system.storage'
+import prompt from '@system.prompt'
+import fetch from '@system.fetch'
+import audio from '@system.audio'
+import network from '@system.network'
+import plus from "../Common/means.js";//公共数据
+
+
+export default {
+  protected: {
+    icon: null
+  },
+  private: {
+    id: '',
+    story: {}
+  },
+  onInit() {
+    // 设置标题栏
+    this.id = this.$page.query.id;
+    this.history()
+  },
+  createShortcut() {
+    // 创建快捷方式
+    this.$app.$def.createShortcut()
+  },
+  tiao(url) {
+
+  },
+  history() {
+    var that = this;
+    fetch.fetch({
+      url: 'https://www.dudugushi.com/anonymous/story/' + that.id,
+      method: 'get',
+      resphonseType: 'json',
+      header: {
+        'Content-Type': 'application/json',
+      },
+      success: function (res) {
+        var resphose = JSON.parse(res.data);
+        that.story = resphose.story
+      },
+      fail: function (err) { }
+    })
+  },
+  audioPlays(url) {
+    var that = this;
+    var src="http://dudu-image-1253462148.image.myqcloud.com/story/"+url
+    network.getType({
+      success: function (data) {
+        if (data.type === 'wifi') {
+          // 如果是wifi直接播放
+          that.audioPlay(src)
+        } else {
+          // 提示框
+          that.onShowMsg(src)
+        }
+      }
+    })
+  },
+  onShowMsg(url) {
+    var $this = this;
+    prompt.showDialog({
+      title: '提示',
+      message: '当前为非wifi环境，继续播放将消耗流量，是否继续？',
+      buttons: [
+        {
+          text: '确定',
+          color: '#33dd44'
+        },
+        {
+          text: '取消',
+          color: '#33dd44'
+        },
+      ],
+      success: function (data) {
+        console.log(111)
+        // 非wifi情况下继续播放
+        if (data.index === 0) {
+          $this.audioPlay(url)
+        }
+      },
+      complete: function () { }
+    })
+  },
+  audioPlay(src) {
+    audio.src = src
+    audio.play()
+  }
+}
+</script>
+
+<style>
+@import "../Common/public.css";
+.demo-page {
+  flex-direction: column;
+  align-items: center;
+}
+</style>

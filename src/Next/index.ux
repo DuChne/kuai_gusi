@@ -1,0 +1,327 @@
+<template>
+<!-- template里只能有一个根节点 -->
+<div class="demo-page">
+    
+    <web src="{{webH5}}" allowthirdpartycookies="true"></web>
+    <!-- <div><text>{{webH5}}</text></div> -->
+
+</div>
+</template>
+
+<script>
+  import router from '@system.router'
+import fetch from '@system.fetch'
+import allAreaNews from "../Common/areaInfo.js";
+import prompt from '@system.prompt'
+import device from '@system.device'
+
+export default {
+    private: {
+       webH5:''
+    },
+    onShow(){
+        APP_STATISTICS.page_show( this );//在onShow方法的第一行加入此代码
+        //App业务代码
+    },
+    onHide() {
+        APP_STATISTICS.page_hide( this ); //在onHide方法的第一行加入此代码
+        //...业务代码
+    },
+    onInit () {
+        this.webH5= this.$page.query.url;
+    }
+   
+}
+function idCheck(idcard){
+    var area = { 11: '北京', 12: '天津', 13: '河北', 14: '山西', 15: '内蒙古', 21: '辽宁', 22: '吉林', 23: '黑龙江', 31: '上海', 32: '江苏', 33: '浙江', 34: '安徽', 35: '福建', 36: '江西', 37: '山东', 41: '河南', 42: '湖北', 43: '湖南', 44: '广东', 45: '广西', 46: '海南', 50: '重庆', 51: '四川', 52: '贵州', 53: '云南', 54: '西藏', 61: '陕西', 62: '甘肃', 63: '青海', 64: '宁夏', 65: '新疆', 71: '台湾', 81: '香港', 82: '澳门', 91: '国外' }
+    var Y, JYM;
+    var S, M;
+    var idcard_array = idcard.split('');
+    //地区检验
+    if (area[parseInt(idcard.substr(0, 2))] === null) {
+        return false;
+    }
+    //身份号码位数及格式检验
+    switch (idcard.length) {
+        case 18:
+            //18位身份号码检测
+            //出生日期的合法性检查
+            //闰年月日:((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))
+            //平年月日:((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))
+            var ereg;
+            if (parseInt(idcard.substr(6, 4)) % 4 === 0 || (parseInt(idcard.substr(6, 4)) % 100 === 0 && parseInt(idcard.substr(6, 4)) % 4 === 0)) {
+                ereg = /^[1-9][0-9]{5}(19|20)[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}[0-9Xx]$/; //闰年出生日期的合法性正则表达式
+            } else {
+                ereg = /^[1-9][0-9]{5}(19|20)[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]{3}[0-9Xx]$/; //平年出生日期的合法性正则表达式
+            }
+            if (ereg.test(idcard)) {//测试出生日期的合法性
+                //计算校验位
+                S = (parseInt(idcard_array[0]) + parseInt(idcard_array[10])) * 7
+                  + (parseInt(idcard_array[1]) + parseInt(idcard_array[11])) * 9
+                  + (parseInt(idcard_array[2]) + parseInt(idcard_array[12])) * 10
+                  + (parseInt(idcard_array[3]) + parseInt(idcard_array[13])) * 5
+                  + (parseInt(idcard_array[4]) + parseInt(idcard_array[14])) * 8
+                  + (parseInt(idcard_array[5]) + parseInt(idcard_array[15])) * 4
+                  + (parseInt(idcard_array[6]) + parseInt(idcard_array[16])) * 2
+                  + parseInt(idcard_array[7])
+                  + parseInt(idcard_array[8]) * 6
+                  + parseInt(idcard_array[9]) * 3;
+                Y = S % 11;
+                M = 'F';
+                JYM = '10X98765432';
+                M = JYM.substr(Y, 1);
+                if (M == idcard_array[17].toUpperCase()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            break;
+        default:
+            return false;
+            break;
+    }
+}
+</script>
+
+<style>
+    .yzm {
+    position: absolute;
+    width: 180px;
+    line-height: 70px;
+    height: 70px;
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #1e96fa;
+    font-size: 16px;
+    top: 10px;
+    right: 15px;
+    border-radius: 4px;
+    z-index: 333;
+}
+.yzm text{
+    color: #FFFFFF;
+    text-align: center;
+    margin-left: 18px;
+}
+.demo-page {
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    /* padding: 0 28px; */
+    background-color: #f7f7f7;
+}
+.title{
+  height: 90px;
+  line-height: 90px;
+  padding: 0 30px;
+  color: #6e6e6e;
+  font-size: 26px;
+}
+.title .bule{
+  color: #1e96fa;
+}
+.ent-input .label{
+  width: 180px;
+  font-size: 26px;
+  color: #505050;
+}
+.title-card{
+  line-height: 30px;
+  height: 50px;
+  padding-bottom: 18px;
+}
+.ent-input{
+  background-color: #FFFFFF;
+  padding: 0 30px;
+  width: 750px;
+  display: flex;
+  position: relative;
+  height: 92px;
+  align-items: center;
+  border-bottom: 1px solid #f8f8f8;
+}
+.left-arrow{
+  position: absolute;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  top: 16px;
+}
+.ent-input .select-address {
+    padding-left: 60px;
+    color:#6e6e6e;
+    font-size: 24px;
+}
+.hint-message{
+  
+  line-height: 24px;
+  padding: 0 30px;
+}
+.hint-message text{
+  font-size: 20px;
+  color: #adadad;
+}
+.post-message{
+  width: 690px;
+  text-decoration: none;
+  border-radius: 6px;
+  background-color: #1e96fa;
+  margin: 0 auto;
+  margin-top: 38px;
+  height: 90px;
+}
+.post-message text{
+    color: #FFF;
+    margin: 0 auto;
+    font-size: 38px;
+}
+/* 遮罩层 */
+.mask{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1001;
+  background-color: rgba(0,0,0,.7);
+}
+.select-number-content{
+  position: absolute;
+  width: 700px;
+  /* height: 614px; */
+  top: 330px;
+  left: 25px;
+  /* transform: translateY(50%); */
+  border-radius: 10px;
+  background-color: #FFF;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.select-number-content .number-title{
+  font-size: 24px;
+  line-height: 24px;
+  padding: 20px 25px;
+}
+.select-number-content .text{
+  color: #3bb7eb;
+}
+.select-number-content .input-botton{
+  width: 654px;
+  margin: 0 auto;
+  position: relative;
+}
+.select-number-content .input-botton .int{
+  font-size: 28px;
+  border-radius: 6px;
+  border: 1px solid #dddddd;
+  height: 72px;
+  padding: 10px 20px;
+}
+.select-number-content .number-content{
+  display: flex;
+  width: 654px;
+  margin: 0 auto;
+  height: 300px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  flex-wrap: wrap;
+}
+.select-number-content .number-content .number{
+  width: 50%;
+  text-align: center;
+  color: #333;
+  font-size: 26px;
+  line-height: 52px;
+}
+.select-number-content .change-batches{
+  color: #1e96fa;
+  height: 86px;
+  text-align: center;
+  line-height: 86px;
+  border-top: 1px solid #DDD;
+  font-size: 30px;
+  width: 100%;
+}
+#search-icon{
+  position: absolute;
+  right: 10px;
+  top: 0px;
+  z-index: 99;
+  width: 70px;
+  height: 70px;
+}
+.success-show-fixed{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color:rgba(0,0,0,0.7);
+}
+.success-show-fixed .content{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+.success-show-fixed .content .head{
+  width: 565px;
+  height: 733px;
+  margin: 0 auto;
+  margin-bottom: 93px;
+
+}
+.success-show-fixed .content .red-get{
+  width: 354px;
+  height: 105px;
+  margin: 0 auto;
+}
+.select-address-list{
+  display: flex;
+  width: 750px;
+  flex-direction: row-reverse;
+  /* flex-direction: column;
+  align-items: flex-start; */
+}
+.select-address-list .address-content{
+  width: 180px;
+  font-size: 26px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: #FFF;
+  height: 100%;
+}
+.select-address-list .province{
+  right: 360px;
+}
+.select-address-list .address-content .list-name-address{
+  color: #666;
+  border-bottom: 1px solid #F4F4F4;
+  margin-left: 20px;
+  line-height: 86px;
+  height: 86px;
+  position: relative;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  lines: 1;
+}
+.select-address-list .address-content .active-address{
+  color: #1e96fa;
+}
+.select-address-list .city{
+  right: 180px;
+}
+.select-address-list .area{
+  right: 0;
+}
+.end-card{
+    width: 518px;
+}
+</style>
+      
